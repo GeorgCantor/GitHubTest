@@ -1,7 +1,8 @@
-package com.georgcantor.githubtest
+package com.georgcantor.githubtest.view
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.georgcantor.githubtest.R
 
 class MainActivity : AppCompatActivity() {
 
