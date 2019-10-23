@@ -2,6 +2,7 @@ package com.georgcantor.githubtest.view.fragment
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Editable
@@ -35,9 +36,17 @@ import java.util.concurrent.TimeUnit
 
 class UsersFragment : Fragment() {
 
+    companion object {
+        const val ACCOUNT = "account"
+        const val USER_NAME = "user_name"
+        const val IMAGE_URL = "image_url"
+    }
     private lateinit var adapter: UsersAdapter
     private lateinit var viewModel: UsersViewModel
     private lateinit var manager: InputMethodManager
+    private lateinit var preferences: SharedPreferences
+    private lateinit var name: String
+    private lateinit var url: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +61,15 @@ class UsersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        preferences = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        val account = arguments?.getParcelable<Parcelable>(ACCOUNT) as? GoogleSignInAccount
+
+        preferences.edit().putString(USER_NAME, account?.displayName).apply()
+        preferences.edit().putString(IMAGE_URL, account?.photoUrl.toString()).apply()
+
+        name = if (account?.displayName == null) preferences.getString(USER_NAME, "").toString() else account.displayName.toString()
+        url = if (account?.photoUrl == null) preferences.getString(IMAGE_URL, "").toString() else account.photoUrl.toString()
+
         manager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         toolbar.setNavigationOnClickListener {
@@ -60,19 +78,16 @@ class UsersFragment : Fragment() {
         }
 
         setupNavigationView()
-
         setupRecyclerView()
-
         setupEditText()
     }
 
     private fun setupNavigationView() {
-        val account = arguments?.getParcelable<Parcelable>("account") as? GoogleSignInAccount
         val header = requireActivity().navView.getHeaderView(0)
-        header.nameTextView.text = account?.displayName.toString()
+        header.nameTextView.text = name
 
         Picasso.with(context)
-            .load(account?.photoUrl)
+            .load(url)
             .into(header.userImageView)
     }
 
@@ -142,6 +157,11 @@ class UsersFragment : Fragment() {
             })
 
         DisposableManager.add(disposable)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        requireActivity().finish()
     }
 
     override fun onDestroy() {

@@ -1,22 +1,23 @@
 package com.georgcantor.githubtest.view.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.georgcantor.githubtest.R
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import kotlinx.android.synthetic.main.fragment_sign_in.*
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import android.app.Activity
-import androidx.appcompat.app.AppCompatActivity
 import com.georgcantor.githubtest.utils.openFragment
 import com.georgcantor.githubtest.utils.shortToast
+import com.georgcantor.githubtest.view.fragment.UsersFragment.Companion.ACCOUNT
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import kotlinx.android.synthetic.main.fragment_sign_in.*
 
 class SignInFragment : Fragment() {
 
@@ -62,7 +63,7 @@ class SignInFragment : Fragment() {
         val bundle = Bundle()
         val usersFragment = UsersFragment()
 
-        bundle.putParcelable("account", account)
+        bundle.putParcelable(ACCOUNT, account)
         usersFragment.arguments = bundle
         activity.openFragment(usersFragment)
     }

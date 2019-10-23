@@ -9,7 +9,6 @@ import com.georgcantor.githubtest.view.fragment.SignInFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.georgcantor.githubtest.view.fragment.UsersFragment
 
-
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
