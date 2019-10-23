@@ -108,6 +108,12 @@ class UsersFragment : Fragment() {
     fun loadUsers(query: String, page: Int) {
         val disposable = viewModel.getUsers(query, page, 30)
             .retry(3)
+            .doOnSubscribe {
+                refreshLayout.isRefreshing = true
+            }
+            .doOnEach {
+                refreshLayout.isRefreshing = false
+            }
             .subscribe({
                 adapter.setUsers(it as MutableList<UserEntry>)
             }, {
