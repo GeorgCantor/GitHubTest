@@ -3,6 +3,7 @@ package com.georgcantor.githubtest.view.fragment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
@@ -17,6 +18,7 @@ import com.georgcantor.githubtest.utils.EndlessRecyclerViewScrollListener
 import com.georgcantor.githubtest.utils.shortToast
 import com.georgcantor.githubtest.view.adapter.UsersAdapter
 import com.georgcantor.githubtest.viewmodel.UsersViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -27,6 +29,19 @@ import org.koin.core.parameter.parametersOf
 import java.util.concurrent.TimeUnit
 
 class UsersFragment : Fragment() {
+
+//    companion object {
+//        const val GOOGLE_ACCOUNT = "account"
+//
+//        fun newInstance(account: GoogleSignInAccount): UsersFragment {
+//            val fragment = UsersFragment()
+//            val args = Bundle()
+//            args.putParcelable(GOOGLE_ACCOUNT, account)
+//            fragment.arguments = args
+//
+//            return fragment
+//        }
+//    }
 
     private lateinit var adapter: UsersAdapter
     private lateinit var viewModel: UsersViewModel
@@ -53,6 +68,8 @@ class UsersFragment : Fragment() {
         setupRecyclerView()
 
         setupEditText()
+
+        requireActivity().shortToast(arguments?.getParcelable<Parcelable>("account").toString())
     }
 
     private fun setupRecyclerView() {
