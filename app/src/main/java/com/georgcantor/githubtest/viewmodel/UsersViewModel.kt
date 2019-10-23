@@ -15,8 +15,7 @@ class UsersViewModel(private val apiRepository: ApiRepository) : ViewModel() {
         query: String,
         page: Int,
         perPage: Int
-    ): Observable<List<UserEntry>> =
-        apiRepository.getUsers(query, page, perPage).map(UsersResponse::items)
+    ): Observable<List<UserEntry>> = apiRepository.getUsers(query, page, perPage).map(UsersResponse::items)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
 
