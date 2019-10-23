@@ -8,6 +8,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -19,6 +21,7 @@ import com.georgcantor.githubtest.utils.shortToast
 import com.georgcantor.githubtest.view.adapter.UsersAdapter
 import com.georgcantor.githubtest.viewmodel.UsersViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -29,19 +32,6 @@ import org.koin.core.parameter.parametersOf
 import java.util.concurrent.TimeUnit
 
 class UsersFragment : Fragment() {
-
-//    companion object {
-//        const val GOOGLE_ACCOUNT = "account"
-//
-//        fun newInstance(account: GoogleSignInAccount): UsersFragment {
-//            val fragment = UsersFragment()
-//            val args = Bundle()
-//            args.putParcelable(GOOGLE_ACCOUNT, account)
-//            fragment.arguments = args
-//
-//            return fragment
-//        }
-//    }
 
     private lateinit var adapter: UsersAdapter
     private lateinit var viewModel: UsersViewModel
@@ -63,13 +53,22 @@ class UsersFragment : Fragment() {
         toolbar.setNavigationOnClickListener {
             requireActivity().drawerLayout.openDrawer(Gravity.LEFT)
         }
+
+        val account = arguments?.getParcelable<Parcelable>("account") as? GoogleSignInAccount
+        val header = requireActivity().navView.getHeaderView(0)
+        val nameTextView = header.findViewById<TextView>(R.id.nameTextView)
+        val userImageView = header.findViewById<ImageView>(R.id.userImageView)
+        nameTextView.text = account?.displayName.toString()
+
+        Picasso.with(context)
+            .load(account?.photoUrl)
+            .into(userImageView)
+
         manager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         setupRecyclerView()
 
         setupEditText()
-
-        requireActivity().shortToast(arguments?.getParcelable<Parcelable>("account").toString())
     }
 
     private fun setupRecyclerView() {

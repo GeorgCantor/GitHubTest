@@ -3,6 +3,7 @@ package com.georgcantor.githubtest.view
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.georgcantor.githubtest.R
+import com.georgcantor.githubtest.utils.DisposableManager
 import com.georgcantor.githubtest.utils.openFragment
 import com.georgcantor.githubtest.view.fragment.SignInFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -21,6 +22,11 @@ class MainActivity : AppCompatActivity() {
         } else {
             openFragment(SignInFragment())
         }
+    }
+
+    override fun onDestroy() {
+        DisposableManager.dispose()
+        super.onDestroy()
     }
 
 }
