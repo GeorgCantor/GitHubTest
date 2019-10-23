@@ -43,6 +43,12 @@ class UsersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         manager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
+        setupRecyclerView()
+
+        setupEditText()
+    }
+
+    private fun setupRecyclerView() {
         val gridLayoutManager = StaggeredGridLayoutManager(
             3,
             StaggeredGridLayoutManager.VERTICAL
@@ -64,8 +70,6 @@ class UsersFragment : Fragment() {
             loadUsers(searchEditText.text.toString().trim { it <= ' ' }, 1)
             refreshLayout.isRefreshing = false
         }
-
-        setupEditText()
     }
 
     private fun setupEditText() {
@@ -81,7 +85,7 @@ class UsersFragment : Fragment() {
         })
     }
 
-    fun loadUsers(query:String, page: Int) {
+    fun loadUsers(query: String, page: Int) {
         val disposable = viewModel.getUsers(query, page, 30)
             .retry(3)
             .subscribe({
