@@ -9,6 +9,10 @@ import retrofit2.http.Query
 interface ApiService {
 
     @GET("search/users")
-    fun getUsers(@Query("q") query: String): Observable<Response<UsersResponse>>
+    fun getUsers(
+        @Query("q") query: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int
+    ): Observable<Response<UsersResponse>>
 
 }
