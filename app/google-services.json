@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "386590060587-kccpmh7030butsb93aontm4t0vnqspfp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.georgcantor.githubtest",
+            "certificate_hash": "c877dd51cd8d77d47a03d3ae1249eff3f3ea6440"
+          }
+        },
+        {
           "client_id": "386590060587-2a1coj4i3fqiaht9sm8m36i19qsgj77q.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
