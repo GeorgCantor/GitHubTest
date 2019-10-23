@@ -2,7 +2,6 @@ package com.georgcantor.githubtest.model.remote
 
 import com.georgcantor.githubtest.model.data.UsersResponse
 import io.reactivex.Observable
-import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -13,6 +12,6 @@ interface ApiService {
         @Query("q") query: String,
         @Query("page") page: Int,
         @Query("per_page") perPage: Int
-    ): Observable<Response<UsersResponse>>
+    ): Observable<UsersResponse>
 
 }

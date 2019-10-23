@@ -2,6 +2,9 @@ package com.georgcantor.githubtest.utils
 
 import android.content.Context
 import android.net.ConnectivityManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.georgcantor.githubtest.R
 
 fun Context.isNetworkAvailable(): Boolean {
     val connectivityManager =
@@ -15,4 +18,11 @@ fun Context.isNetworkAvailable(): Boolean {
     }
 
     return false
+}
+
+fun AppCompatActivity.openFragment(fragment: Fragment) {
+    val transaction = supportFragmentManager.beginTransaction()
+    transaction.replace(R.id.frame_container, fragment)
+    transaction.addToBackStack(null)
+    transaction.commit()
 }
