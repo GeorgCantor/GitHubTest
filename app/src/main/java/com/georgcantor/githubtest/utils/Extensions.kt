@@ -2,6 +2,7 @@ package com.georgcantor.githubtest.utils
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.georgcantor.githubtest.R
@@ -26,3 +27,6 @@ fun AppCompatActivity.openFragment(fragment: Fragment) {
     transaction.addToBackStack(null)
     transaction.commit()
 }
+
+fun Context.shortToast(message: CharSequence) =
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
