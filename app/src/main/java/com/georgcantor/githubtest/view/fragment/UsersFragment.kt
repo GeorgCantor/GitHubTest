@@ -1,13 +1,14 @@
 package com.georgcantor.githubtest.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -18,9 +19,13 @@ import com.georgcantor.githubtest.utils.EndlessRecyclerViewScrollListener
 import com.georgcantor.githubtest.utils.shortToast
 import com.georgcantor.githubtest.view.adapter.UsersAdapter
 import com.georgcantor.githubtest.viewmodel.UsersViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_users.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
+import java.util.concurrent.TimeUnit
 
 class UsersFragment : Fragment() {
 
@@ -41,7 +46,8 @@ class UsersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        manager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        manager =
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         setupRecyclerView()
 
@@ -72,16 +78,29 @@ class UsersFragment : Fragment() {
         }
     }
 
+    @SuppressLint("CheckResult")
     private fun setupEditText() {
         searchEditText.requestFocus()
-        searchEditText.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                manager.hideSoftInputFromWindow(v.windowToken, 0)
+        val publishSubject = PublishSubject.create<Int>()
+        publishSubject
+            .debounce(600, TimeUnit.MILLISECONDS)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
                 adapter.clearUsers()
                 loadUsers(searchEditText.text.toString().trim { it <= ' ' }, 1)
-                return@OnEditorActionListener true
             }
-            false
+
+        searchEditText.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+                publishSubject.onNext(0)
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
         })
     }
 
