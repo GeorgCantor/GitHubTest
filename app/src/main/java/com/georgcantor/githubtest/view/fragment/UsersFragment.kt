@@ -99,7 +99,7 @@ class UsersFragment : Fragment() {
             manager.hideSoftInputFromWindow(requireActivity().window.decorView.windowToken, 0)
         }
 
-        requireActivity().logout_button.setOnClickListener {
+        requireActivity().logoutButton.setOnClickListener {
             requireActivity().drawerLayout.closeDrawer(Gravity.LEFT)
             googleSignInClient.signOut()
             val activity = context as AppCompatActivity

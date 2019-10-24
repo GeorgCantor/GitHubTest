@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_sign_in.*
 class SignInFragment : Fragment() {
 
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var activity: AppCompatActivity
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,11 +36,17 @@ class SignInFragment : Fragment() {
             .requestEmail()
             .build()
 
+        activity = context as AppCompatActivity
+
         googleSignInClient = GoogleSignIn.getClient(requireActivity(), signInOptions)
 
         signInButton.setOnClickListener {
             val signInIntent = googleSignInClient.signInIntent
             startActivityForResult(signInIntent, 101)
+        }
+
+        enterButton.setOnClickListener {
+            activity.openFragment(UsersFragment())
         }
     }
 
@@ -59,7 +66,6 @@ class SignInFragment : Fragment() {
     }
 
     private fun onLoggedIn(account: GoogleSignInAccount) {
-        val activity = context as AppCompatActivity
         val bundle = Bundle()
         val usersFragment = UsersFragment()
 
