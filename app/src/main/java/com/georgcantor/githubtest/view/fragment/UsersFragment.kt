@@ -41,6 +41,7 @@ import java.util.concurrent.TimeUnit
 class UsersFragment : Fragment() {
 
     companion object {
+        private const val PLACEHOLDER_URL = "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male2-512.png"
         const val PREFERENCES = "preferences"
         const val ACCOUNT = "account"
         const val USER_NAME = "user_name"
@@ -86,7 +87,7 @@ class UsersFragment : Fragment() {
         url = if (account?.photoUrl == null) {
             preferences.getString(
                 IMAGE_URL,
-                "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male2-512.png"
+                PLACEHOLDER_URL
             ).toString()
         } else {
             account.photoUrl.toString()
