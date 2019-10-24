@@ -22,8 +22,7 @@
         android:layout_gravity="start"
         android:background="@color/colorPrimary"
         android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme"
-        app:headerLayout="@layout/nav_header_main" >
+        android:theme="@style/AppTheme">
 
         <LinearLayout
             android:layout_width="match_parent"
