@@ -100,6 +100,7 @@ class UsersFragment : Fragment() {
         }
 
         requireActivity().logout_button.setOnClickListener {
+            requireActivity().drawerLayout.closeDrawer(Gravity.LEFT)
             googleSignInClient.signOut()
             val activity = context as AppCompatActivity
             activity.openFragment(SignInFragment())
