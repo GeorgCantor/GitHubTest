@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -19,17 +20,20 @@ import com.georgcantor.githubtest.R
 import com.georgcantor.githubtest.model.data.UserEntry
 import com.georgcantor.githubtest.utils.DisposableManager
 import com.georgcantor.githubtest.utils.EndlessRecyclerViewScrollListener
+import com.georgcantor.githubtest.utils.openFragment
 import com.georgcantor.githubtest.utils.shortToast
 import com.georgcantor.githubtest.view.adapter.UsersAdapter
 import com.georgcantor.githubtest.viewmodel.UsersViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_users.*
-import kotlinx.android.synthetic.main.nav_header_main.view.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
 import java.util.concurrent.TimeUnit
@@ -37,6 +41,7 @@ import java.util.concurrent.TimeUnit
 class UsersFragment : Fragment() {
 
     companion object {
+        const val PREFERENCES = "preferences"
         const val ACCOUNT = "account"
         const val USER_NAME = "user_name"
         const val IMAGE_URL = "image_url"
@@ -45,6 +50,7 @@ class UsersFragment : Fragment() {
     private lateinit var viewModel: UsersViewModel
     private lateinit var manager: InputMethodManager
     private lateinit var preferences: SharedPreferences
+    private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var name: String
     private lateinit var url: String
 
@@ -61,14 +67,30 @@ class UsersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        preferences = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(requireActivity(), signInOptions)
+
+        preferences = requireActivity().getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
         val account = arguments?.getParcelable<Parcelable>(ACCOUNT) as? GoogleSignInAccount
+        account?.displayName?.let { preferences.edit().putString(USER_NAME, it).apply() }
+        account?.photoUrl?.let { preferences.edit().putString(IMAGE_URL, it.toString()).apply() }
 
-        preferences.edit().putString(USER_NAME, account?.displayName).apply()
-        preferences.edit().putString(IMAGE_URL, account?.photoUrl.toString()).apply()
+        name = if (account?.displayName == null) {
+            preferences.getString(USER_NAME, "").toString()
+        } else {
+            account.displayName.toString()
+        }
 
-        name = if (account?.displayName == null) preferences.getString(USER_NAME, "").toString() else account.displayName.toString()
-        url = if (account?.photoUrl == null) preferences.getString(IMAGE_URL, "").toString() else account.photoUrl.toString()
+        url = if (account?.photoUrl == null) {
+            preferences.getString(
+                IMAGE_URL,
+                "https://www.pexels.com/photo/nature-red-love-romantic-67636/"
+            ).toString()
+        } else {
+            account.photoUrl.toString()
+        }
 
         manager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
@@ -77,18 +99,24 @@ class UsersFragment : Fragment() {
             manager.hideSoftInputFromWindow(requireActivity().window.decorView.windowToken, 0)
         }
 
+        requireActivity().logout_button.setOnClickListener {
+            googleSignInClient.signOut()
+            val activity = context as AppCompatActivity
+            activity.openFragment(SignInFragment())
+        }
+
         setupNavigationView()
         setupRecyclerView()
         setupEditText()
     }
 
     private fun setupNavigationView() {
-        val header = requireActivity().navView.getHeaderView(0)
-        header.nameTextView.text = name
+        requireActivity().nameTextView.text = name
 
         Picasso.with(context)
             .load(url)
-            .into(header.userImageView)
+            .placeholder(R.drawable.ic_launcher_foreground)
+            .into(requireActivity().userImageView)
     }
 
     private fun setupRecyclerView() {

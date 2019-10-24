@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">GitHubTest</string>
     <string name="edit_text_hint">Введите имя</string>
+    <string name="logout_button_text">Выйти</string>
 </resources>
