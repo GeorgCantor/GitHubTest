@@ -23,6 +23,7 @@ class SignInFragment : Fragment() {
 
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var activity: AppCompatActivity
+    private lateinit var usersFragment: Fragment
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,7 +38,7 @@ class SignInFragment : Fragment() {
             .build()
 
         activity = context as AppCompatActivity
-
+        usersFragment = UsersFragment()
         googleSignInClient = GoogleSignIn.getClient(requireActivity(), signInOptions)
 
         signInButton.setOnClickListener {
@@ -46,7 +47,7 @@ class SignInFragment : Fragment() {
         }
 
         enterButton.setOnClickListener {
-            activity.openFragment(UsersFragment())
+            activity.openFragment(usersFragment)
         }
     }
 
@@ -67,7 +68,6 @@ class SignInFragment : Fragment() {
 
     private fun onLoggedIn(account: GoogleSignInAccount) {
         val bundle = Bundle()
-        val usersFragment = UsersFragment()
 
         bundle.putParcelable(ACCOUNT, account)
         usersFragment.arguments = bundle
