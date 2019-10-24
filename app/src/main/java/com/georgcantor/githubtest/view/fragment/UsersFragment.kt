@@ -86,7 +86,7 @@ class UsersFragment : Fragment() {
         url = if (account?.photoUrl == null) {
             preferences.getString(
                 IMAGE_URL,
-                "https://www.pexels.com/photo/nature-red-love-romantic-67636/"
+                "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male2-512.png"
             ).toString()
         } else {
             account.photoUrl.toString()
